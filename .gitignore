@@ -1,0 +1,7 @@
+node_modules/
+tests/
+debug*.js
+shot.js
+test.js
+package.json
+package-lock.json

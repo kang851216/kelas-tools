@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Timer Kelas Online — Penghitung Waktu Kegiatan Belajar | KelasTools</title>
+<meta name="description" content="Timer kelas sederhana dengan layar besar dan bunyi pengingat. Atur 1, 3, 5, atau 10 menit untuk kuis, diskusi, dan kerja kelompok. Gratis dan bisa dipakai offline.">
+<link rel="canonical" href="https://kang851216.github.io/kelas-tools/timer.html">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%8F%B1%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top"><div class="inner">
+  <a class="brand" href="index.html">Kelas<span>Tools</span></a>
+  <nav><a href="roulette.html">Roda</a><a href="kelompok.html">Kelompok</a><a href="timer.html">Timer</a></nav>
+</div></header>
+
+<main class="wrap">
+  <h1>Timer Kelas</h1>
+  <p class="lead">Hitung mundur dengan layar besar supaya semua siswa di kelas bisa melihat sisa waktu.</p>
+
+  <div class="card">
+    <div class="pillbar">
+      <span class="chip" data-min="1">1 menit</span>
+      <span class="chip" data-min="3">3 menit</span>
+      <span class="chip" data-min="5">5 menit</span>
+      <span class="chip" data-min="10">10 menit</span>
+      <span class="chip" data-min="15">15 menit</span>
+    </div>
+
+    <div class="timer-face" id="face" role="timer" aria-live="off">05:00</div>
+
+    <div class="row">
+      <button class="btn primary" id="start">Mulai</button>
+      <button class="btn" id="plus">+1 menit</button>
+      <button class="btn" id="reset">Reset</button>
+    </div>
+
+    <label for="custom">Atur sendiri (menit)</label>
+    <input type="number" id="custom" min="1" max="180" value="5" inputmode="numeric">
+    <p class="hint">Bunyi pengingat berbunyi 3 kali saat waktu habis. Layar tetap menyala selama timer berjalan (jika peramban mengizinkan).</p>
+  </div>
+
+  <section class="prose">
+    <h2>Ide penggunaan timer di kelas</h2>
+    <ul>
+      <li><b>5 menit</b> — diskusi kelompok sebelum presentasi.</li>
+      <li><b>10 menit</b> — kuis singkat atau latihan soal.</li>
+      <li><b>1 menit</b> — sesi "cepat jawab" atau pemanasan.</li>
+      <li><b>15 menit</b> — kerja mandiri, tugas menulis, atau membaca.</li>
+    </ul>
+    <h2>Kenapa memakai timer membantu</h2>
+    <p>Batas waktu yang terlihat membuat siswa lebih fokus dan guru lebih mudah menjaga ritme pelajaran. Angka besar di layar juga mengurangi pertanyaan "masih berapa menit lagi?".</p>
+    <p>Timer ini berjalan sepenuhnya di peramban. Tidak ada unggahan, tidak perlu akun, dan tetap bekerja tanpa koneksi setelah halaman terbuka sekali.</p>
+  </section>
+
+  <footer class="site"><p>KelasTools — alat kecil untuk guru. <a href="index.html">Semua alat</a></p></footer>
+</main>
+
+<nav class="bottomnav">
+  <a href="index.html"><b>🏠</b>Beranda</a>
+  <a href="roulette.html"><b>🎡</b>Roda</a>
+  <a href="kelompok.html"><b>👥</b>Kelompok</a>
+  <a href="timer.html" class="active"><b>⏱️</b>Timer</a>
+</nav>
+
+<script src="js/app.js"></script>
+<script src="js/timer.js"></script>
+</body>
+</html>

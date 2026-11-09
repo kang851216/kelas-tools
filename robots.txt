@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kang851216.github.io/kelas-tools/sitemap.xml

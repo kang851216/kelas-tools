@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Roda Putar Nama Online — Pengundi Nama Acak Gratis | KelasTools</title>
+<meta name="description" content="Roda putar nama online gratis untuk memilih nama acak. Tempel daftar nama siswa, putar roda, dan dapatkan pemenang secara adil. Bisa dipakai offline, tanpa daftar.">
+<link rel="canonical" href="https://kang851216.github.io/kelas-tools/roulette.html">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%A1%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Roda Putar Nama",
+"url":"https://kang851216.github.io/kelas-tools/roulette.html",
+"applicationCategory":"EducationalApplication","operatingSystem":"Web",
+"offers":{"@type":"Offer","price":"0","priceCurrency":"IDR"},
+"inLanguage":"id","description":"Roda putar nama acak untuk memilih siswa, membentuk kelompok, dan mengundi di kelas."}
+</script>
+</head>
+<body>
+<header class="top"><div class="inner">
+  <a class="brand" href="index.html">Kelas<span>Tools</span></a>
+  <nav><a href="roulette.html">Roda</a><a href="kelompok.html">Kelompok</a><a href="timer.html">Timer</a></nav>
+</div></header>
+
+<main class="wrap">
+  <h1>Roda Putar Nama</h1>
+  <p class="lead">Tempel daftar nama, tekan putar, dan biarkan roda memilih. Adil, acak, dan bisa dipakai tanpa internet.</p>
+
+  <div class="card">
+    <label for="names">Daftar nama <span id="count" class="hint" style="display:inline">(0)</span></label>
+    <textarea id="names" spellcheck="false" autocapitalize="off" autocorrect="off" placeholder="Satu nama per baris, contoh:&#10;Ayu&#10;Budi&#10;Citra&#10;Dewi"></textarea>
+    <p class="hint">Bisa juga dipisah koma. Nama tersimpan otomatis di perangkat ini.</p>
+
+    <div class="wheelbox">
+      <canvas id="wheel" width="840" height="840" aria-label="Roda nama"></canvas>
+      <div id="pointer" aria-hidden="true"></div>
+      <canvas id="fx" width="840" height="840" aria-hidden="true"
+        style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas>
+    </div>
+
+    <div class="winner" id="winner" role="status" aria-live="polite"></div>
+
+    <div class="row">
+      <button class="btn primary" id="spin">Putar roda</button>
+      <button class="btn" id="share">Bagikan hasil</button>
+    </div>
+    <div class="row">
+      <button class="btn sm" id="remove">Keluarkan pemenang</button>
+      <button class="btn sm" id="shuffle">Acak urutan</button>
+      <button class="btn sm" id="clear">Hapus semua</button>
+    </div>
+    <p class="hint">Tip: aktifkan "Keluarkan pemenang" untuk mengundi beberapa siswa tanpa pengulangan.</p>
+  </div>
+
+  <section class="prose">
+    <h2>Cara memakai roda putar nama</h2>
+    <ol>
+      <li>Tempel daftar nama siswa di kotak di atas — satu nama per baris.</li>
+      <li>Tekan <b>Putar roda</b>. Roda berhenti pada satu nama secara acak.</li>
+      <li>Tekan <b>Bagikan hasil</b> untuk mengirim tangkapan layar pemenang ke grup WhatsApp kelas.</li>
+    </ol>
+
+    <h2>Kapan alat ini berguna di kelas</h2>
+    <ul>
+      <li>Memilih siswa untuk menjawab atau presentasi tanpa terlihat memihak.</li>
+      <li>Menentukan urutan tampil saat praktik atau ujian lisan.</li>
+      <li>Mengundi hadiah kecil, tugas kebersihan, atau ketua kelompok.</li>
+      <li>Memecah kebosanan di akhir pelajaran dengan satu putaran cepat.</li>
+    </ul>
+
+    <h2>Mengapa hasilnya adil</h2>
+    <p>Setiap nama mendapat ukuran sektor yang sama, dan pemilihan indeks memakai generator angka acak dari peramban (<code>crypto.getRandomValues</code>), bukan <code>Math.random</code>. Nama juga diacak ulang sebelum roda digambar, sehingga posisi di layar tidak memengaruhi peluang.</p>
+
+    <h2>Tanpa daftar, tanpa unggah</h2>
+    <p>Daftar nama disimpan di penyimpanan lokal peramban Anda dan tidak pernah dikirim ke server mana pun. Setelah halaman terbuka sekali, alat ini tetap berjalan walau koneksi kelas terputus.</p>
+  </section>
+
+  <footer class="site">
+    <p>KelasTools — alat kecil untuk guru. <a href="index.html">Semua alat</a></p>
+  </footer>
+</main>
+
+<nav class="bottomnav">
+  <a href="index.html"><b>🏠</b>Beranda</a>
+  <a href="roulette.html" class="active"><b>🎡</b>Roda</a>
+  <a href="kelompok.html"><b>👥</b>Kelompok</a>
+  <a href="timer.html"><b>⏱️</b>Timer</a>
+</nav>
+
+<script src="js/app.js"></script>
+<script src="js/roulette.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pembagi Kelompok Acak Online — Bagi Kelompok Belajar Gratis | KelasTools</title>
+<meta name="description" content="Bagi siswa menjadi kelompok secara acak dalam satu klik. Atur jumlah kelompok, tetapkan peran (ketua, notulis), lalu simpan hasilnya sebagai gambar atau CSV. Gratis, tanpa daftar.">
+<link rel="canonical" href="https://kang851216.github.io/kelas-tools/kelompok.html">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%A5%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Pembagi Kelompok Acak",
+"url":"https://kang851216.github.io/kelas-tools/kelompok.html",
+"applicationCategory":"EducationalApplication","operatingSystem":"Web",
+"offers":{"@type":"Offer","price":"0","priceCurrency":"IDR"},"inLanguage":"id",
+"description":"Alat untuk membagi siswa menjadi kelompok acak dengan pembagian peran."}
+</script>
+</head>
+<body>
+<header class="top"><div class="inner">
+  <a class="brand" href="index.html">Kelas<span>Tools</span></a>
+  <nav><a href="roulette.html">Roda</a><a href="kelompok.html">Kelompok</a><a href="timer.html">Timer</a></nav>
+</div></header>
+
+<main class="wrap">
+  <h1>Pembagi Kelompok Acak</h1>
+  <p class="lead">Tempel daftar nama, pilih jumlah kelompok, dan bagikan secara acak. Cocok untuk kerja kelompok, diskusi, dan proyek kelas.</p>
+
+  <div class="card">
+    <label for="names">Daftar nama <span id="count" class="hint" style="display:inline"></span></label>
+    <textarea id="names" spellcheck="false" autocapitalize="off" autocorrect="off" placeholder="Satu nama per baris, contoh:&#10;Ayu&#10;Budi&#10;Citra&#10;Dewi&#10;Eko&#10;Fajar"></textarea>
+
+    <label for="groups">Jumlah kelompok</label>
+    <select id="groups">
+      <option>2</option><option selected>3</option><option>4</option><option>5</option>
+      <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+    </select>
+
+    <label for="roles">Pembagian peran</label>
+    <select id="roles">
+      <option value="none" selected>Tanpa peran</option>
+      <option value="basic">Ketua / Notulis / Juru Bicara</option>
+      <option value="full">Ketua / Notulis / Juru Bicara / Anggota</option>
+    </select>
+
+    <div class="row">
+      <button class="btn primary" id="go">Bagi kelompok</button>
+      <button class="btn" id="again" disabled>Acak ulang</button>
+    </div>
+    <p class="hint">Nama tersimpan otomatis di perangkat ini dan dipakai bersama dengan alat Roda Putar.</p>
+  </div>
+
+  <div id="out" aria-live="polite"></div>
+
+  <div class="row" id="actions" style="display:none">
+    <button class="btn sm" id="copy">Salin teks</button>
+    <button class="btn sm" id="png">Simpan gambar</button>
+    <button class="btn sm" id="csv">Unduh CSV</button>
+  </div>
+
+  <section class="prose">
+    <h2>Kapan memakai pembagi kelompok acak</h2>
+    <ul>
+      <li>Kerja kelompok harian supaya siswa tidak selalu memilih teman yang sama.</li>
+      <li>Diskusi kelompok mendadak saat jam pelajaran berakhir.</li>
+      <li>Pembagian kelompok lomba, Pramuka, atau proyek antar kelas.</li>
+      <li>Rotasi kelompok tiap pekan agar semua siswa saling mengenal.</li>
+    </ul>
+
+    <h2>Cara kerjanya</h2>
+    <ol>
+      <li>Tempel daftar nama (satu per baris).</li>
+      <li>Pilih jumlah kelompok dan jenis peran.</li>
+      <li>Tekan <b>Bagi kelompok</b>. Daftar diacak lalu dibagi rata.</li>
+      <li>Simpan hasil sebagai gambar untuk ditempel di grup WhatsApp kelas.</li>
+    </ol>
+
+    <h2>Jumlah anggota tidak selalu sama</h2>
+    <p>Kalau jumlah siswa tidak habis dibagi, sisa siswa dimasukkan ke kelompok paling depan satu per satu. Contoh: 23 siswa menjadi 4 kelompok → 6, 6, 6, 5. Tidak ada siswa yang tertinggal.</p>
+
+    <h2>Adil dan tidak berpihak</h2>
+    <p>Pengacakan memakai algoritma Fisher–Yates dengan sumber acak kriptografis dari peramban, dijalankan dua kali (satu untuk urutan nama, satu untuk urutan peran). Semua proses berjalan di perangkat Anda — daftar nama tidak pernah dikirim ke server.</p>
+  </section>
+
+  <footer class="site"><p>KelasTools — alat kecil untuk guru. <a href="index.html">Semua alat</a></p></footer>
+</main>
+
+<nav class="bottomnav">
+  <a href="index.html"><b>🏠</b>Beranda</a>
+  <a href="roulette.html"><b>🎡</b>Roda</a>
+  <a href="kelompok.html" class="active"><b>👥</b>Kelompok</a>
+  <a href="timer.html"><b>⏱️</b>Timer</a>
+</nav>
+
+<script src="js/app.js"></script>
+<script src="js/kelompok.js"></script>
+</body>
+</html>
