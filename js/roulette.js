@@ -12,6 +12,19 @@
   const shuffleBtn = document.getElementById('shuffle');
   const clearBtn = document.getElementById('clear');
   const shareBtn = document.getElementById('share');
+  const stage = document.getElementById('wheel3d');
+
+  // extruded rim: stacked discs at negative Z give the wheel real thickness
+  (function buildRim() {
+    const LAYERS = 26, GAP = 3;
+    for (let i = LAYERS; i >= 1; i--) {
+      const d = document.createElement('div');
+      d.className = 'rim';
+      d.style.transform = 'translateZ(' + (-i * GAP).toFixed(1) + 'px)';
+      d.style.background = 'hsl(218 28% ' + (6 + (LAYERS - i) * 0.55).toFixed(1) + '%)';
+      stage.insertBefore(d, stage.firstChild);
+    }
+  })();
 
   const PALETTE = ['#1d4ed8', '#b45309', '#047857', '#b91c1c', '#6d28d9', '#0e7490', '#be185d', '#4d7c0f'];
 
@@ -25,6 +38,7 @@
   const saved = App.loadNames();
   if (saved.length) namesEl.value = saved.join('\n');
   names = App.parseNames(namesEl.value);
+  rotation = -Math.PI / Math.max(names.length, 1) / 2;
   syncCount();
   draw();
 
@@ -34,7 +48,10 @@
     syncCount();
     lastWinner = null;
     winEl.textContent = '';
-    if (!spinning) draw();
+    if (!spinning) {
+      rotation = -Math.PI / Math.max(names.length, 1) / 2;
+      draw();
+    }
   });
 
   function syncCount() {
@@ -128,11 +145,21 @@
   }
 
   function drawHub(cx, cy) {
+    ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, 46, 0, TAU);
-    ctx.fillStyle = '#ffffff';
+    const hg = ctx.createRadialGradient(cx - 14, cy - 16, 4, cx, cy, 52);
+    hg.addColorStop(0, '#ffffff');
+    hg.addColorStop(0.65, '#f3f4f6');
+    hg.addColorStop(1, '#dfe3e8');
+    ctx.fillStyle = hg;
+    ctx.shadowColor = 'rgba(17,24,39,.28)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 4;
     ctx.fill();
-    ctx.strokeStyle = 'rgba(17,24,39,.12)';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.strokeStyle = 'rgba(255,255,255,.85)';
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.fillStyle = '#111827';
@@ -154,6 +181,8 @@
   function spin() {
     if (spinning || names.length < 2) return;
     spinning = true;
+    stage.classList.remove('settle');
+    stage.classList.add('spinning');
     spinBtn.disabled = true;
     winEl.textContent = '';
     winEl.classList.remove('pop');
@@ -203,6 +232,9 @@
   function finish(rot) {
     rotation = rot;
     spinning = false;
+    stage.classList.remove('spinning');
+    stage.classList.add('settle');
+    setTimeout(() => stage.classList.remove('settle'), 650);
     const idx = currentIndex(rotation);
     lastWinner = names[idx];
     winEl.textContent = lastWinner;

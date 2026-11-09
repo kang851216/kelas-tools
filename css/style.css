@@ -70,13 +70,51 @@ textarea:focus,input:focus,select:focus{border-color:var(--accent);box-shadow:0 
 .pillbar .chip{cursor:pointer}
 .pillbar .chip:hover{border-color:var(--accent)}
 .badge-ok{color:var(--ok);font-weight:700}
-/* roulette */
-.wheelbox{position:relative;display:flex;justify-content:center;margin:8px 0 4px}
-canvas#wheel{width:min(92vw,420px);height:min(92vw,420px);max-width:420px;max-height:420px;touch-action:manipulation}
+/* roulette — 3D wheel */
+.wheelbox{
+  position:relative;margin:6px auto 2px;width:100%;max-width:460px;aspect-ratio:1/.93;
+  display:flex;justify-content:center;align-items:center;
+  perspective:1100px;perspective-origin:50% 46%
+}
+.wheel3d{position:relative;transform-style:preserve-3d;transform:rotateX(var(--tilt,30deg)) scale(var(--wsc,.86));will-change:transform}
+canvas#wheel{
+  display:block;width:100%;height:auto;aspect-ratio:1;border-radius:50%;
+  touch-action:manipulation;backface-visibility:hidden;
+  filter:drop-shadow(0 14px 18px rgba(17,24,39,.22))
+}
+.rim{position:absolute;inset:0;border-radius:50%;background:#0d1522;pointer-events:none;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.09),inset 0 -12px 18px rgba(255,255,255,.05)}
+.face{position:absolute;inset:0;border-radius:50%;pointer-events:none;transform:translateZ(1px);
+  background:
+    radial-gradient(ellipse 42% 30% at 28% 20%,rgba(255,255,255,.55),rgba(255,255,255,0) 62%),
+    radial-gradient(ellipse 90% 55% at 50% 116%,rgba(0,0,0,.34),rgba(0,0,0,0) 62%)
+}
 #pointer{
-  position:absolute;top:-2px;left:50%;transform:translateX(-50%);
-  width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;
-  border-top:26px solid var(--accent);filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));z-index:2
+  position:absolute;top:1%;left:50%;width:0;height:0;pointer-events:none;z-index:3;
+  border-left:15px solid transparent;border-right:15px solid transparent;
+  border-top:30px solid var(--accent);
+  transform:translate3d(-50%,0,58px);
+  filter:drop-shadow(0 12px 14px rgba(17,24,39,.45))
+}
+
+.groundsh{
+  position:absolute;left:50%;bottom:1%;width:74%;height:9%;transform:translateX(-50%);
+  background:radial-gradient(ellipse at center,rgba(17,24,39,.45),rgba(17,24,39,0) 72%);
+  filter:blur(7px);pointer-events:none;z-index:0
+}
+.wheel3d.spinning{animation:wobble 1.15s ease-in-out infinite}
+@keyframes wobble{
+  0%,100%{transform:rotateX(var(--tilt,30deg)) rotateY(0) scale(var(--wsc,.86))}
+  50%{transform:rotateX(calc(var(--tilt,30deg) + 2.5deg)) rotateY(1.4deg) scale(var(--wsc,.86))}
+}
+.wheel3d.settle{animation:settle .6s cubic-bezier(.2,1.5,.35,1)}
+@keyframes settle{
+  0%{transform:rotateX(var(--tilt,30deg)) scale(calc(var(--wsc,.86) * .985))}
+  55%{transform:rotateX(var(--tilt,30deg)) scale(calc(var(--wsc,.86) * 1.022))}
+  100%{transform:rotateX(var(--tilt,30deg)) scale(var(--wsc,.86))}
+}
+@media(prefers-reduced-motion:reduce){
+  .wheel3d.spinning,.wheel3d.settle{animation:none}
 }
 .winner{
   margin-top:18px;margin-bottom:6px;text-align:center;font-size:clamp(20px,6vw,28px);font-weight:800;
