@@ -3,5 +3,9 @@ tests/
 debug*.js
 shot.js
 test.js
+live-test.js
+publish.sh
+*.sh
 package.json
 package-lock.json
+*.zip
