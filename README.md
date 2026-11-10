@@ -16,12 +16,13 @@ Situs: <https://kang851216.github.io/kelas-tools/>
 
 ## Panduan
 
-- [Cara mengundi siswa di kelas](https://kang851216.github.io/kelas-tools/panduan/cara-mengundi-siswa.html)
+- [Cara mengundi siswa di kelas](https://kang851216.github.io/kelas-tools/cara-mengundi-siswa.html)
 - [Cara membagi kelompok belajar](https://kang851216.github.io/kelas-tools/panduan/cara-membagi-kelompok-belajar.html)
-- [Timer ujian 30 menit](https://kang851216.github.io/kelas-tools/panduan/timer-ujian-30-menit.html)
-- [Pembagi kelompok 4 orang](https://kang851216.github.io/kelas-tools/panduan/pembagi-kelompok-4-orang.html)
-- [Roda nama offline](https://kang851216.github.io/kelas-tools/panduan/roda-nama-offline.html)
-- [Ide ice breaking kelas](https://kang851216.github.io/kelas-tools/panduan/ide-ice-breaking-kelas.html)
+- [Ide memilih siswa secara acak](https://kang851216.github.io/kelas-tools/panduan/ide-memilih-siswa-acak.html)
+- [Timer ujian 30 menit](https://kang851216.github.io/kelas-tools/timer-ujian-30-menit.html)
+- [Pembagi kelompok 4 orang](https://kang851216.github.io/kelas-tools/pembagi-kelompok-4-orang.html)
+- [Roda nama offline](https://kang851216.github.io/kelas-tools/roda-nama-offline.html)
+- [Ide ice breaking kelas](https://kang851216.github.io/kelas-tools/ide-ice-breaking-kelas.html)
 
 ## Catatan teknis
 
