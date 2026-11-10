@@ -12,7 +12,7 @@
     // were inflating the number and made it impossible to tell real visitors apart.
     if (location.hostname !== 'kang851216.github.io') return;
 
-    var NS = 'kelas-tools-web';
+    var NS = 'kelas-tools-web2';
     var base = 'https://abacus.jasoncameron.dev/hit/' + NS + '/';
     var d = new Date();
     var pad = function (n) { return (n < 10 ? '0' : '') + n; };
