@@ -272,7 +272,7 @@ export function createWheel3D({ container, palette }) {
 
   /* ---------- textures ---------- */
   function labelTexture(text, align, allowTwo) {
-    const LIMIT = 800 - 34;
+    const LIMIT = 800 - 34; // probed at the reference width; the fit loop uses W
     const probe = document.createElement('canvas').getContext('2d');
     const fam = (px) => '800 ' + px + 'px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
     probe.font = fam(240);
@@ -285,8 +285,11 @@ export function createWheel3D({ container, palette }) {
       : [String(text)];
     const two = lines.length > 1;
 
-    const W = 800;
-    const H = two ? 372 : 330;
+    // dense wheels (>20 names) get a wider, flatter label so long names
+    // still have radial room to render at a readable size
+    const dense = allowTwo === false;
+    const W = dense ? 1040 : 800;
+    const H = two ? 372 : dense ? 250 : 330;
     const c = document.createElement('canvas');
     c.width = W; c.height = H;
     const g = c.getContext('2d');
@@ -294,14 +297,14 @@ export function createWheel3D({ container, palette }) {
     let fs = two ? 205 : 240;
     g.font = fam(fs);
     const widest = () => Math.max(...lines.map((l) => g.measureText(l).width));
-    while (widest() > LIMIT && fs > 52) {
+    while (widest() > W - 34 && fs > 52) {
       fs -= 6;
       g.font = fam(fs);
     }
     const draw = lines.map((l) => {
-      if (g.measureText(l).width <= LIMIT) return l;
+      if (g.measureText(l).width <= W - 34) return l;
       let t = l;
-      while (t.length > 1 && g.measureText(t + '…').width > LIMIT) t = t.slice(0, -1);
+      while (t.length > 1 && g.measureText(t + '…').width > W - 34) t = t.slice(0, -1);
       return t + '…';
     });
 
