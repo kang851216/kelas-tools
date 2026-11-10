@@ -199,6 +199,7 @@ html.embed header.top,html.embed .bottomnav,html.embed footer.site,
 html.embed .faq,html.embed .related,html.embed .groundsh{display:none!important}
 html.embed body{padding-bottom:0!important;background:transparent}
 html.embed .wrap{padding-top:6px}
+html.embed .wrap > h1,html.embed .wrap > .lead,html.embed .wrap > .row{display:none!important}
 @media (max-width:520px){
   .embedwrap iframe{height:660px}
 }
