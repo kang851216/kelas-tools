@@ -203,3 +203,9 @@ html.embed .wrap > h1,html.embed .wrap > .lead,html.embed .wrap > .row{display:n
 @media (max-width:520px){
   .embedwrap iframe{height:660px}
 }
+
+/* real tool screenshots used as figures on the landing pages */
+.land figure{margin:18px 0}
+.land figure img{display:block;width:100%;height:auto;border:1px solid var(--line,#e5e7eb);border-radius:12px;background:#fff}
+.land figcaption{margin-top:6px;font-size:.8rem;color:var(--muted)}
+.land .embedwrap{border:1px solid var(--line,#e5e7eb);border-radius:12px;overflow:hidden;background:#fff}
