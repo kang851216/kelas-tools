@@ -22,5 +22,16 @@
     };
     bump(day);
     bump('all');
+
+    // Which channel sent this visit? ?ref=wa / ?ref=qr / ?ref=fb ... once per tab.
+    var ref = (location.search.match(/[?&]ref=([a-zA-Z0-9_-]{1,16})/) || [])[1];
+    if (ref) {
+      try {
+        if (!sessionStorage.getItem('kt-ref')) {
+          sessionStorage.setItem('kt-ref', ref);
+          bump('ref-' + ref.toLowerCase());
+        }
+      } catch (e) { /* private mode */ }
+    }
   } catch (e) { /* never break the page for a counter */ }
 })();

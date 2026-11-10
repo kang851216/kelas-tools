@@ -50,3 +50,6 @@ mshot.js
 wcheck.js
 navclear.js
 inmeas.js
+cardtest.js
+watest.js
+tools/fix_escapes.py

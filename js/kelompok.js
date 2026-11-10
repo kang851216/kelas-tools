@@ -121,6 +121,10 @@
     return rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
   }
 
+  const qrImg = new Image();
+  qrImg.decoding = 'async';
+  qrImg.src = 'img/qr-kelompok.png';
+
   function makeCanvas() {
     const S = 1080;
     const pad = 56;
@@ -137,7 +141,7 @@
       rows.push(Math.max(a, b));
       i += 2;
     }
-    const H = 300 + rows.reduce((s, h) => s + h + 20, 0) + 70;
+    const H = 300 + rows.reduce((s, h) => s + h + 20, 0) + 230;
 
     const c = document.createElement('canvas');
     c.width = S; c.height = H;
@@ -166,10 +170,26 @@
       y += rows[r] + 20;
     }
 
+    // QR + address band, so the image carries a way back to the tool
+    const by = H - 196, bh = 150, qs = 108, qx = pad + 24, qy = by + (bh - qs) / 2;
+    g2.fillStyle = '#ffffff';
+    roundRect(g2, pad, by, S - pad * 2, bh, 32);
+    g2.fill();
+    if (qrImg.complete && qrImg.naturalWidth) {
+      g2.drawImage(qrImg, qx, qy, qs, qs);
+    }
+    const tx = qx + qs + 26;
+    g2.textAlign = 'left';
+    g2.textBaseline = 'middle';
     g2.fillStyle = '#6b7280';
-    g2.font = '600 26px system-ui, sans-serif';
-    g2.textAlign = 'center';
-    g2.fillText('Dibuat dengan KelasTools · gratis & tanpa unggah', S / 2, H - 36);
+    g2.font = '600 24px system-ui, sans-serif';
+    g2.fillText('Bagi kelompok lagi kapan saja', tx, by + 48);
+    const addr = 'kang851216.github.io/kelas-tools';
+    let us = 32;
+    do { g2.font = '800 ' + us + 'px system-ui, sans-serif'; us -= 1; }
+    while (g2.measureText(addr).width > S - pad - 24 - tx && us > 18);
+    g2.fillStyle = '#0f172a';
+    g2.fillText(addr, tx, by + 102);
     return c;
   }
 
@@ -192,6 +212,13 @@
     g2.font = '600 30px system-ui, sans-serif';
     grp.members.forEach((m, i) => {
       const line = m.name + (m.role ? '  ·  ' + m.role : '');
+      // shrink before truncating: a cut-off role ("Juru Bic...") looks broken on a shared image
+      let fsz = 30;
+      g2.font = '600 ' + fsz + 'px system-ui, sans-serif';
+      while (g2.measureText(line).width > w - 48 && fsz > 21) {
+        fsz -= 1;
+        g2.font = '600 ' + fsz + 'px system-ui, sans-serif';
+      }
       g2.fillText(appFit(g2, line, w - 48), x + 24, y + 82 + i * 44);
     });
   }
@@ -219,6 +246,14 @@
   document.getElementById('copy').addEventListener('click', () => App.copy(asText(), 'Teks kelompok disalin'));
   document.getElementById('csv').addEventListener('click', () => {
     App.download(new Blob([asCsv()], { type: 'text/csv;charset=utf-8' }), 'kelompok-' + App.today() + '.csv');
+  });
+  document.getElementById('wa').addEventListener('click', () => {
+    if (!result) return;
+    const body = result.map((g) => g.title + ': ' +
+      g.members.map((m) => m.name + (m.role ? ' (' + m.role + ')' : '')).join(', ')).join('\n');
+    const url = 'https://kang851216.github.io/kelas-tools/kelompok.html?ref=wa';
+    const text = body + '\n\nDibagi acak dengan KelasTools (gratis, tanpa unggah): ' + url;
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
   });
   document.getElementById('png').addEventListener('click', () => {
     App.shareOrDownload(makeCanvas(), 'kelompok-' + App.today() + '.png', 'Pembagian kelompok');

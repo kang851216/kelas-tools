@@ -12,6 +12,7 @@
   const shuffleBtn = document.getElementById('shuffle');
   const clearBtn = document.getElementById('clear');
   const shareBtn = document.getElementById('share');
+  const waBtn = document.getElementById('wa');
   const stage = document.getElementById('wheel3d');
   let wheel3d = null;
 
@@ -68,6 +69,7 @@
     countEl.textContent = '(' + names.length + ' nama)';
     spinBtn.disabled = names.length < 2;
     shareBtn.disabled = !lastWinner;
+    if (waBtn) waBtn.disabled = !lastWinner;
   }
 
   /* ---------- drawing ---------- */
@@ -296,6 +298,11 @@
   }
 
   /* ---------- share card ---------- */
+  /* QR on the card points back at this page with ref=qr, so scans are measurable */
+  const qrImg = new Image();
+  qrImg.decoding = 'async';
+  qrImg.src = 'img/qr-roulette.png';
+
   function makeCard() {
     const S = 1080;
     const c = document.createElement('canvas');
@@ -333,9 +340,32 @@
     g.fillStyle = 'rgba(255,255,255,.9)';
     g.fillText(App.today(), S / 2, S / 2 + 130);
 
-    g.font = '700 40px system-ui, sans-serif';
-    g.fillStyle = 'rgba(255,255,255,.75)';
-    g.fillText('KelasTools · Roda Putar Nama', S / 2, S - 190);
+    // bottom band: QR + address, so a shared card can actually bring people back
+    const by = S - 306, bh = 196;
+    g.fillStyle = 'rgba(255,255,255,.95)';
+    roundRect(g, pad, by, S - pad * 2, bh, 42);
+    g.fill();
+    const qs = 140, qx = pad + 30, qy = by + (bh - qs) / 2;
+    if (qrImg.complete && qrImg.naturalWidth) {
+      g.drawImage(qrImg, qx, qy, qs, qs);
+    } else {
+      g.fillStyle = '#e2e8f0';
+      roundRect(g, qx, qy, qs, qs, 12);
+      g.fill();
+    }
+    const tx = qx + qs + 32;
+    const avail = S - pad - 26 - tx;
+    g.textAlign = 'left';
+    g.textBaseline = 'middle';
+    g.fillStyle = '#64748b';
+    g.font = '600 27px system-ui, sans-serif';
+    g.fillText('Coba gratis · tanpa daftar', tx, by + 58);
+    const addr = 'kang851216.github.io/kelas-tools';
+    let us = 36;
+    do { g.font = '800 ' + us + 'px system-ui, sans-serif'; us -= 1; }
+    while (g.measureText(addr).width > avail && us > 20);
+    g.fillStyle = '#0f172a';
+    g.fillText(addr, tx, by + 120);
 
     return c;
   }
@@ -353,6 +383,16 @@
   /* ---------- events ---------- */
   spinBtn.addEventListener('click', spin);
   cvs.addEventListener('click', spin);
+
+  if (waBtn) {
+    waBtn.addEventListener('click', () => {
+      if (!lastWinner) return;
+      const url = 'https://kang851216.github.io/kelas-tools/roulette.html?ref=wa';
+      const text = 'Pemenang undian: ' + lastWinner +
+        '\nRoda putar nama gratis untuk kelas (bisa offline): ' + url;
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+    });
+  }
 
   shareBtn.addEventListener('click', () => {
     if (!lastWinner) return;
