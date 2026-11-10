@@ -143,7 +143,10 @@
       const font = (px) => '700 ' + px + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
       let lfs = fs;
       ctx.font = font(lfs);
-      const lines = n > 20 ? [names[i]] : App.splitLabel(names[i], (t) => ctx.measureText(t).width, maxW);
+      // over 20 names: one line, capped so the glyphs stay readable
+      const full = names[i];
+      const shown = n > 20 && full.length > 13 ? full.slice(0, 12).trimEnd() + '…' : full;
+      const lines = n > 20 ? [shown] : App.splitLabel(full, (t) => ctx.measureText(t).width, maxW);
       while (Math.max(...lines.map((l) => ctx.measureText(l).width)) > maxW && lfs > fs * 0.32) {
         lfs -= 1;
         ctx.font = font(lfs);

@@ -280,14 +280,16 @@ export function createWheel3D({ container, palette }) {
     const App = window.App || {};
     // with more than ~20 segments the wedges are too narrow for two lines,
     // so long names shrink on one line instead of stacking
-    const lines = allowTwo !== false && typeof App.splitLabel === 'function'
+    const dense = allowTwo === false;
+    let lines = allowTwo !== false && typeof App.splitLabel === 'function'
       ? App.splitLabel(String(text), (t) => probe.measureText(t).width, LIMIT)
       : [String(text)];
+    // dense wheel: cap the label so the glyph can stay readable — the full name
+    // is still announced in the result line below the wheel
+    if (dense) lines = lines.map((l) => (l.length > 13 ? l.slice(0, 12).trimEnd() + '…' : l));
     const two = lines.length > 1;
 
-    // dense wheels (>20 names) get a wider, flatter label so long names
-    // still have radial room to render at a readable size
-    const dense = allowTwo === false;
+    // dense wheels get a wider, flatter label so names have radial room
     const W = dense ? 1040 : 800;
     const H = two ? 372 : dense ? 250 : 330;
     const c = document.createElement('canvas');
