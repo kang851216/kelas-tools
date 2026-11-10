@@ -8,6 +8,9 @@
     // Don't count automated browsers or prerenders.
     if (navigator.webdriver) return;
     if (document.visibilityState === 'prerender') return;
+    // Only the published site counts: local previews (http://127.0.0.1, file://)
+    // were inflating the number and made it impossible to tell real visitors apart.
+    if (location.hostname !== 'kang851216.github.io') return;
 
     var NS = 'kelas-tools-web';
     var base = 'https://abacus.jasoncameron.dev/hit/' + NS + '/';
