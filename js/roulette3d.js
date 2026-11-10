@@ -279,6 +279,12 @@ export function createWheel3D({ container, palette }) {
       fs -= 6;
       g.font = fam(fs);
     }
+    // past the readable floor, ellipsise instead of clipping glyphs at the texture edge
+    let draw = str;
+    if (g.measureText(draw).width > W - 34) {
+      while (draw.length > 1 && g.measureText(draw + '…').width > W - 34) draw = draw.slice(0, -1);
+      draw += '…';
+    }
 
     const inward = align === 'in';
     const x = inward ? 14 : W - 14;
@@ -291,19 +297,19 @@ export function createWheel3D({ container, palette }) {
     g.shadowBlur = 16;
     g.lineWidth = 16;
     g.strokeStyle = 'rgba(4,8,16,.55)';
-    g.strokeText(str, x, H / 2 + 3);
+    g.strokeText(draw, x, H / 2 + 3);
 
     g.shadowBlur = 0;
     g.lineWidth = 8;
     g.strokeStyle = 'rgba(6,10,20,.62)';
-    g.strokeText(str, x, H / 2);
+    g.strokeText(draw, x, H / 2);
 
     const grad = g.createLinearGradient(0, H * 0.18, 0, H * 0.84);
     grad.addColorStop(0, '#ffffff');
     grad.addColorStop(0.55, '#ffffff');
     grad.addColorStop(1, '#e7edf9');
     g.fillStyle = grad;
-    g.fillText(str, x, H / 2);
+    g.fillText(draw, x, H / 2);
 
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;

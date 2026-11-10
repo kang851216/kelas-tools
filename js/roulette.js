@@ -139,7 +139,23 @@
       const flipped = screen > Math.PI / 2 && screen < (3 * Math.PI) / 2;
       ctx.save();
       ctx.rotate(flipped ? mid + Math.PI : mid);
-      const label = App.fitText(ctx, names[i], r * 0.62);
+      // shrink this name until it fits the radial room, then ellipsise
+      const maxW = r * 0.62;
+      let lfs = fs;
+      while (ctx.measureText(names[i]).width > maxW && lfs > fs * 0.55) {
+        lfs -= 1;
+        ctx.font = '700 ' + lfs + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
+      }
+      const label = App.fitText(ctx, names[i], maxW);
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = Math.max(2, lfs * 0.14);
+      ctx.strokeStyle = 'rgba(6,10,20,.55)';
+      if (flipped) {
+        ctx.strokeText(label, -(r - 30), 0);
+      } else {
+        ctx.strokeText(label, r - 30, 0);
+      }
+      ctx.font = '700 ' + lfs + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
       if (flipped) {
         ctx.textAlign = 'left';
         ctx.fillText(label, -(r - 30), 0);
@@ -148,6 +164,7 @@
         ctx.fillText(label, r - 30, 0);
       }
       ctx.restore();
+      ctx.font = '700 ' + fs + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
     }
     ctx.shadowBlur = 0;
     ctx.restore();
