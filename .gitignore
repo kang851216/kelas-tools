@@ -53,3 +53,7 @@ inmeas.js
 cardtest.js
 watest.js
 tools/fix_escapes.py
+perf.js
+3dcheck.js
+livecard.js
+reftest.js

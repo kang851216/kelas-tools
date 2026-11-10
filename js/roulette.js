@@ -433,19 +433,43 @@
   /* ---------- optional three.js renderer (progressive enhancement) ---------- */
   const probe = document.createElement('canvas');
   const webglOK = !!(probe.getContext('webgl2') || probe.getContext('webgl'));
-  if (webglOK) import(new URL('js/roulette3d.js', document.baseURI).href)
-    .then((mod) => {
-      const w = mod.createWheel3D({
-        container: document.querySelector('.wheelbox'),
-        palette: PALETTE
-      });
-      if (!w) return;
-      wheel3d = w;
-      document.body.classList.add('gl-on');
-      wheel3d.setNames(names);
-      wheel3d.setRotation(rotation, false);
-      const gl = document.getElementById('gl');
-      if (gl) gl.addEventListener('click', spin);
-    })
-    .catch(() => { /* WebGL or module unavailable: keep the canvas wheel */ });
+  if (webglOK) {
+    let loading3D = false;
+    const loadThree = () => {
+      if (loading3D || wheel3d) return;
+      loading3D = true;
+      import(new URL('js/roulette3d.js', document.baseURI).href)
+        .then((mod) => {
+          const w = mod.createWheel3D({
+            container: document.querySelector('.wheelbox'),
+            palette: PALETTE
+          });
+          if (!w) { loading3D = false; return; }
+          const activate = () => {
+            // never swap renderers mid-spin: the wheel would visibly jump
+            if (spinning) { setTimeout(activate, 400); return; }
+            wheel3d = w;
+            wheel3d.setNames(names);
+            wheel3d.setRotation(rotation, false);
+            document.body.classList.add('gl-on');
+            const gl = document.getElementById('gl');
+            if (gl) gl.addEventListener('click', spin);
+          };
+          activate();
+        })
+        .catch(() => { loading3D = false; /* keep the canvas wheel */ });
+    };
+    // three.js is ~165 KB gzip. Starting the import at first paint makes it compete
+    // with the page itself on a slow phone, so wait for idle (or a first touch).
+    const startWhenIdle = () => {
+      if (window.requestIdleCallback) requestIdleCallback(loadThree, { timeout: 3500 });
+      else setTimeout(loadThree, 1500);
+    };
+    window.addEventListener('load', startWhenIdle);
+    const box = document.querySelector('.wheelbox');
+    if (box) {
+      ['pointerdown', 'touchstart'].forEach((ev) =>
+        box.addEventListener(ev, loadThree, { once: true, passive: true }));
+    }
+  }
 })();
