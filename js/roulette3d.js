@@ -128,7 +128,7 @@ export function createWheel3D({ container, palette }) {
       new THREE.CircleGeometry(R - 0.5, 96),
       new THREE.MeshBasicMaterial({
         map: glossTexture(), transparent: true, depthWrite: false,
-        opacity: 0.9, side: THREE.FrontSide
+        opacity: 0.62, side: THREE.FrontSide
       })
     );
     g.position.z = DEPTH / 2 + 1.45;   // above the bevel (DEPTH/2 + 1.3), below the labels
