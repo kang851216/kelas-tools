@@ -100,7 +100,7 @@ addEventListener('message', function (e) {
   var frames = document.querySelectorAll('.embedwrap iframe');
   for (var i = 0; i < frames.length; i++) {
     if (frames[i].contentWindow === e.source) {
-      var cap = window.innerWidth < 560 ? 640 : 780;
+      var cap = window.innerWidth < 560 ? 900 : 820;
       frames[i].style.height = Math.min(e.data.h + 10, cap) + 'px';
     }
   }

@@ -196,7 +196,7 @@ footer.site{color:var(--muted);font-size:13px;padding:28px 0 40px;border-top:1px
 .guides a{display:block;padding:11px 14px;border:1px solid var(--line,#e5e7eb);border-radius:12px;text-decoration:none;font-weight:600}
 /* ?embed=1 — tool pages rendered inside a landing-page iframe */
 html.embed header.top,html.embed .bottomnav,html.embed footer.site,
-html.embed .faq,html.embed .related,html.embed .groundsh{display:none!important}
+html.embed .faq,html.embed .related,html.embed .prose,html.embed .groundsh{display:none!important}
 html.embed body{padding-bottom:0!important;background:transparent}
 html.embed .wrap{padding-top:6px}
 html.embed .wrap > h1,html.embed .wrap > .lead,html.embed .wrap > .row{display:none!important}
