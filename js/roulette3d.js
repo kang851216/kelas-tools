@@ -145,6 +145,10 @@ export function createWheel3D({ container, palette }) {
   pointer.castShadow = true;
   scene.add(pointer);
 
+  const pinHead = new THREE.Mesh(new THREE.SphereGeometry(6.2, 28, 18), pointerMat);
+  pinHead.position.set(0, 26 + 9.5, R + 5);
+  scene.add(pinHead);
+
   /* ---------- wedge + label build ---------- */
   let wedges = [];
   let labels = [];
@@ -261,7 +265,11 @@ export function createWheel3D({ container, palette }) {
     const x = inward ? 16 : W - 16;
     g.textAlign = inward ? 'left' : 'right';
     g.textBaseline = 'middle';
-    g.fillStyle = 'rgba(0,0,0,.45)';
+    g.lineJoin = 'round';
+    g.lineWidth = 7;
+    g.strokeStyle = 'rgba(8,12,22,.42)';
+    g.strokeText(String(text), x, H / 2);
+    g.fillStyle = 'rgba(0,0,0,.40)';
     g.fillText(String(text), x + (inward ? -2 : 2), H / 2 + 4);
     g.fillStyle = '#ffffff';
     g.fillText(String(text), x, H / 2);
