@@ -66,3 +66,9 @@ data/
 gsc_*.js
 splitcheck.js
 gscsession*.js
+serp_*.js
+serpshot.js
+shotsec.js
+hpcheck.js
+netcheck.js
+splitcheck.js
