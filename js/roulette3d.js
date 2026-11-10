@@ -8,6 +8,7 @@ const R = 100;              // wheel radius
 const DEPTH = 14;           // disc thickness
 const RIM = 2.6;            // polished rim thickness
 const CAM_DIST = 390;
+const LABEL_ASPECT = 800 / 330;
 const ELEV = new THREE.Vector3(0, 0.927, -0.375).normalize(); // ~68deg above the disc
 
 export function createWheel3D({ container, palette }) {
@@ -16,7 +17,10 @@ export function createWheel3D({ container, palette }) {
 
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer = new THREE.WebGLRenderer({
+      antialias: true, alpha: true, powerPreference: 'high-performance',
+      preserveDrawingBuffer: true   // lets the canvas be captured (screenshots / share cards)
+    });
     if (!renderer.getContext()) return null;
   } catch (e) {
     return null;
@@ -79,6 +83,10 @@ export function createWheel3D({ container, palette }) {
   });
   const accentMat = new THREE.MeshStandardMaterial({
     color: 0x2563eb, metalness: 0.6, roughness: 0.25, emissive: 0x1e40af, emissiveIntensity: 0.4
+  });
+  const goldMat = new THREE.MeshStandardMaterial({
+    color: 0xffc23d, metalness: 0.95, roughness: 0.16,
+    emissive: 0xff9a1f, emissiveIntensity: 0.5
   });
 
   const staticParts = new THREE.Group();   // rim + rings + hub: do not spin
@@ -211,6 +219,7 @@ export function createWheel3D({ container, palette }) {
         clearcoat: 0.95, clearcoatRoughness: 0.13
       });
       const mesh = new THREE.Mesh(geo, mat);
+      mesh.userData.baseColor = mat.color.clone();
       mesh.castShadow = true;
       mesh.receiveShadow = true;
       spin.add(mesh);
@@ -219,13 +228,20 @@ export function createWheel3D({ container, palette }) {
       if (!empty) {
         const mid = a0 + seg / 2;
         const outTex = labelTexture(list[i], 'out');
+        const lr = R * 0.615;
+        const arc = (TAU * lr) / n;
+        const lh = Math.min(R * 0.30, arc * 0.80);
+        const lw = Math.min(R * 0.82, lh * LABEL_ASPECT);
         const lm = new THREE.Mesh(
-          new THREE.PlaneGeometry(R * 0.64, R * 0.20),
-          new THREE.MeshBasicMaterial({ map: outTex, transparent: true, depthWrite: false, opacity: 0.99 })
+          new THREE.PlaneGeometry(lw, lh),
+          new THREE.MeshBasicMaterial({ map: outTex, transparent: true, depthWrite: false, opacity: 1 })
         );
-        lm.position.set(Math.cos(mid) * R * 0.61, Math.sin(mid) * R * 0.61, DEPTH / 2 + 1.7);
+        lm.position.set(Math.cos(mid) * lr, Math.sin(mid) * lr, DEPTH / 2 + 1.7);
         lm.rotation.z = mid;
-        lm.userData = { mid, outTex, inTex: labelTexture(list[i], 'in'), flipped: false };
+        lm.userData = {
+          mid, outTex, inTex: labelTexture(list[i], 'in'), flipped: false,
+          baseZ: DEPTH / 2 + 1.7
+        };
         spin.add(lm);
         labels.push(lm);
       }
@@ -250,32 +266,48 @@ export function createWheel3D({ container, palette }) {
 
   /* ---------- textures ---------- */
   function labelTexture(text, align) {
-    const W = 640, H = 160;
+    const W = 800, H = 330;
     const c = document.createElement('canvas');
     c.width = W; c.height = H;
     const g = c.getContext('2d');
-    let fs = 86;
-    const fam = '700 %Fpx system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-    g.font = fam.replace('%F', fs);
-    while (g.measureText(String(text)).width > W - 30 && fs > 22) {
-      fs -= 3;
-      g.font = fam.replace('%F', fs);
+    const fam = (px) => '800 ' + px + 'px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+
+    const str = String(text);
+    let fs = 240;
+    g.font = fam(fs);
+    while (g.measureText(str).width > W - 34 && fs > 56) {
+      fs -= 6;
+      g.font = fam(fs);
     }
+
     const inward = align === 'in';
-    const x = inward ? 16 : W - 16;
+    const x = inward ? 14 : W - 14;
     g.textAlign = inward ? 'left' : 'right';
     g.textBaseline = 'middle';
     g.lineJoin = 'round';
-    g.lineWidth = 7;
-    g.strokeStyle = 'rgba(8,12,22,.42)';
-    g.strokeText(String(text), x, H / 2);
-    g.fillStyle = 'rgba(0,0,0,.40)';
-    g.fillText(String(text), x + (inward ? -2 : 2), H / 2 + 4);
-    g.fillStyle = '#ffffff';
-    g.fillText(String(text), x, H / 2);
+
+    // dark halo keeps white text readable on light segments
+    g.shadowColor = 'rgba(4,8,16,.55)';
+    g.shadowBlur = 16;
+    g.lineWidth = 16;
+    g.strokeStyle = 'rgba(4,8,16,.55)';
+    g.strokeText(str, x, H / 2 + 3);
+
+    g.shadowBlur = 0;
+    g.lineWidth = 8;
+    g.strokeStyle = 'rgba(6,10,20,.62)';
+    g.strokeText(str, x, H / 2);
+
+    const grad = g.createLinearGradient(0, H * 0.18, 0, H * 0.84);
+    grad.addColorStop(0, '#ffffff');
+    grad.addColorStop(0.55, '#ffffff');
+    grad.addColorStop(1, '#e7edf9');
+    g.fillStyle = grad;
+    g.fillText(str, x, H / 2);
+
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = 4;
+    t.anisotropy = 8;
     t.needsUpdate = true;
     return t;
   }
@@ -382,6 +414,16 @@ export function createWheel3D({ container, palette }) {
 
   function setRotation(rad, isSpinning) {
     spinning = !!isSpinning;
+    if (spinning && pulseIdx >= 0) {
+      wedges.forEach((m) => {
+        m.position.z = 0;
+        m.material.color.copy(m.userData.baseColor);
+        m.material.emissiveIntensity = 0;
+      });
+      labels.forEach((l) => { l.position.z = l.userData.baseZ; });
+      if (winBand) { spin.remove(winBand); winBand.geometry.dispose(); winBand = null; }
+      pulseIdx = -1;
+    }
     const wob = spinning ? Math.sin((performance.now() - t0) / 150) * 0.011 : 0;
     spin.rotation.z = SIGN * rad;
     tilt.rotation.x = -Math.PI / 2 + wob;
@@ -400,14 +442,39 @@ export function createWheel3D({ container, palette }) {
     dirty = true;
   }
 
+  const POP_Z = 5;
+  let winBand = null;
+
   function highlight(idx) {
     pulseIdx = idx;
     pulse = performance.now();
     wedges.forEach((m, i) => {
-      m.material.emissive = new THREE.Color(i === idx ? '#ffd479' : '#000000');
-      m.material.emissiveIntensity = i === idx ? 0.55 : 0;
+      m.position.z = 0;
+      m.material.color.copy(m.userData.baseColor);
+      m.material.emissive = new THREE.Color(i === idx ? '#ffcb63' : '#000000');
+      m.material.emissiveIntensity = i === idx ? 0.16 : 0;
     });
+
+    if (winBand) {
+      spin.remove(winBand);
+      winBand.geometry.dispose();
+      winBand = null;
+    }
+    const n = Math.max(wedges.length, 1);
+    const seg = TAU / n;
+    winBand = new THREE.Mesh(
+      new THREE.TorusGeometry(R + RIM - 0.8, 5.4, 18, 80, seg * 0.96),
+      goldMat
+    );
+    winBand.rotation.z = -Math.PI / 2 + idx * seg + seg * 0.04;
+    winBand.position.z = DEPTH / 2 + 5.0;
+    spin.add(winBand);
+    labels.forEach((l, i) => {
+      l.position.z = l.userData.baseZ + (i === idx ? POP_Z : 0);
+    });
+    if (wedges[idx]) wedges[idx].position.z = POP_Z;
     dirty = true;
+    renderOnce();
   }
 
   /* ---------- resize ---------- */
@@ -425,20 +492,37 @@ export function createWheel3D({ container, palette }) {
   window.addEventListener('resize', resize);
   resize();
 
+  function renderOnce() {
+    renderer.render(scene, camera);
+    dirty = false;
+  }
+
   /* ---------- render loop (idle = no GPU work) ---------- */
   (function loop() {
     requestAnimationFrame(loop);
     if (pulseIdx >= 0) {
-      const p = (performance.now() - pulse) / 900;
-      if (p >= 1) {
-        pulseIdx = -1;
-        wedges.forEach((m) => { m.material.emissiveIntensity = 0; });
-      } else {
-        const k = 0.35 + 0.45 * Math.cos(p * Math.PI * 2.2) * (1 - p);
-        if (wedges[pulseIdx]) wedges[pulseIdx].material.emissiveIntensity = k;
-        dirty = true;
+      const p = Math.min(1, (performance.now() - pulse) / 1700);
+      // hold, then settle back into the disc
+      let z = POP_Z;
+      if (p > 0.62) z = POP_Z * (1 - (p - 0.62) / 0.38);
+      z = Math.max(0, z);
+
+      const wedge = wedges[pulseIdx];
+      if (wedge) {
+        wedge.position.z = z;
+        wedge.material.emissiveIntensity = 0.10 + 0.14 * Math.cos(p * Math.PI * 3) * (1 - p);
       }
+      const label = labels[pulseIdx];
+      if (label) label.position.z = label.userData.baseZ + z;
+
+      if (p >= 1) {
+        if (wedge) { wedge.position.z = 0; wedge.material.emissiveIntensity = 0; }
+        if (label) label.position.z = label.userData.baseZ;
+        pulseIdx = -1;
+      }
+      dirty = true;
     }
+
     if (dirty) {
       renderer.render(scene, camera);
       dirty = false;

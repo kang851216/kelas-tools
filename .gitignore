@@ -20,3 +20,11 @@ out_*.txt
 tests/
 liveshot.js
 live-gl.js
+pop2.js
+pop3.js
+popdbg.js
+popdiff.js
+geom.js
+grab.js
+pixel.js
+glpop.js

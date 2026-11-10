@@ -125,7 +125,7 @@
     }
 
     // labels — flip on the left half so every name reads right-side up
-    const fs = n <= 8 ? 40 : n <= 12 ? 33 : n <= 18 ? 27 : n <= 26 ? 22 : 18;
+    const fs = n <= 8 ? 68 : n <= 12 ? 56 : n <= 18 ? 44 : n <= 26 ? 36 : 30;
     ctx.fillStyle = '#ffffff';
     ctx.textBaseline = 'middle';
     ctx.font = '700 ' + fs + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
@@ -217,11 +217,24 @@
       if (spinning) { finish(target); }
     }, dur + 400);
 
+    let lastTickIdx = currentIndex(rotation);
+    let lastTickAt = 0;
+
     (function frame(now) {
       if (!spinning) { clearTimeout(guard); return; }
       const p = Math.min(1, (now - t0) / dur);
       const e = 1 - Math.pow(1 - p, 4); // easeOutQuart
       rotation = start + (target - start) * e;
+
+      // click every time a segment boundary passes the pointer
+      const idx = currentIndex(rotation);
+      if (idx !== lastTickIdx) {
+        lastTickIdx = idx;
+        if (now - lastTickAt > 45) {
+          lastTickAt = now;
+          App.beep(1120 + Math.random() * 110, 20, 0.013);
+        }
+      }
       draw();
       if (p < 1) {
         requestAnimationFrame(frame);
@@ -230,15 +243,6 @@
         finish(target);
       }
     })(performance.now());
-
-    // tick sounds
-    let tick = 0;
-    const tickTimer = setInterval(() => {
-      tick++;
-      App.beep(1200, 40, 0.02);
-      if (tick > 26) clearInterval(tickTimer);
-    }, 160);
-    setTimeout(() => clearInterval(tickTimer), dur);
   }
 
   function finish(rot) {
