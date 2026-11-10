@@ -228,10 +228,15 @@ export function createWheel3D({ container, palette }) {
       if (!empty) {
         const mid = a0 + seg / 2;
         const outTex = labelTexture(list[i], 'out');
-        const lr = R * 0.615;
-        const arc = (TAU * lr) / n;
-        const lh = Math.min(R * 0.30, arc * 0.80);
-        const lw = Math.min(R * 0.82, lh * LABEL_ASPECT);
+        const aspect = (outTex.userData && outTex.userData.aspect) || LABEL_ASPECT;
+        const two = !!(outTex.userData && outTex.userData.two);
+        const lr0 = R * 0.615;
+        const arc = (TAU * lr0) / n;
+        // a two-line label trades width for height: give it the room its segment allows
+        const maxH = Math.min(R * (two ? 0.42 : 0.30), arc * (two ? 0.90 : 0.80));
+        const lw = Math.min(R * 0.74, maxH * aspect);
+        const lh = lw / aspect;
+        const lr = Math.min(lr0, R - lw / 2 - 4);
         const lm = new THREE.Mesh(
           new THREE.PlaneGeometry(lw, lh),
           new THREE.MeshBasicMaterial({ map: outTex, transparent: true, depthWrite: false, opacity: 1 })
@@ -266,55 +271,68 @@ export function createWheel3D({ container, palette }) {
 
   /* ---------- textures ---------- */
   function labelTexture(text, align) {
-    const W = 800, H = 330;
+    const LIMIT = 800 - 34;
+    const probe = document.createElement('canvas').getContext('2d');
+    const fam = (px) => '800 ' + px + 'px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    probe.font = fam(240);
+
+    const App = window.App || {};
+    const lines = typeof App.splitLabel === 'function'
+      ? App.splitLabel(String(text), (t) => probe.measureText(t).width, LIMIT)
+      : [String(text)];
+    const two = lines.length > 1;
+
+    const W = 800;
+    const H = two ? 372 : 330;
     const c = document.createElement('canvas');
     c.width = W; c.height = H;
     const g = c.getContext('2d');
-    const fam = (px) => '800 ' + px + 'px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
-    const str = String(text);
-    let fs = 240;
+    let fs = two ? 205 : 240;
     g.font = fam(fs);
-    while (g.measureText(str).width > W - 34 && fs > 56) {
+    const widest = () => Math.max(...lines.map((l) => g.measureText(l).width));
+    while (widest() > LIMIT && fs > 52) {
       fs -= 6;
       g.font = fam(fs);
     }
-    // past the readable floor, ellipsise instead of clipping glyphs at the texture edge
-    let draw = str;
-    if (g.measureText(draw).width > W - 34) {
-      while (draw.length > 1 && g.measureText(draw + '…').width > W - 34) draw = draw.slice(0, -1);
-      draw += '…';
-    }
+    const draw = lines.map((l) => {
+      if (g.measureText(l).width <= LIMIT) return l;
+      let t = l;
+      while (t.length > 1 && g.measureText(t + '…').width > LIMIT) t = t.slice(0, -1);
+      return t + '…';
+    });
 
     const inward = align === 'in';
     const x = inward ? 14 : W - 14;
     g.textAlign = inward ? 'left' : 'right';
     g.textBaseline = 'middle';
     g.lineJoin = 'round';
-
-    // dark halo keeps white text readable on light segments
     g.shadowColor = 'rgba(4,8,16,.55)';
     g.shadowBlur = 16;
-    g.lineWidth = 16;
+    g.lineWidth = 15;
     g.strokeStyle = 'rgba(4,8,16,.55)';
-    g.strokeText(draw, x, H / 2 + 3);
+
+    const step = fs * 1.14;
+    const y0 = H / 2 - ((draw.length - 1) * step) / 2;
+    for (let i = 0; i < draw.length; i++) g.strokeText(draw[i], x, y0 + i * step + 3);
 
     g.shadowBlur = 0;
     g.lineWidth = 8;
     g.strokeStyle = 'rgba(6,10,20,.62)';
-    g.strokeText(draw, x, H / 2);
+    for (let i = 0; i < draw.length; i++) g.strokeText(draw[i], x, y0 + i * step);
 
-    const grad = g.createLinearGradient(0, H * 0.18, 0, H * 0.84);
+    const grad = g.createLinearGradient(0, H * 0.14, 0, H * 0.88);
     grad.addColorStop(0, '#ffffff');
     grad.addColorStop(0.55, '#ffffff');
     grad.addColorStop(1, '#e7edf9');
     g.fillStyle = grad;
-    g.fillText(draw, x, H / 2);
+    for (let i = 0; i < draw.length; i++) g.fillText(draw[i], x, y0 + i * step);
 
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;
     t.anisotropy = 8;
     t.needsUpdate = true;
+    t.userData = { aspect: W / H, two };
     return t;
   }
 

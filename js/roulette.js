@@ -125,7 +125,7 @@
     }
 
     // labels — flip on the left half so every name reads right-side up
-    const fs = n <= 8 ? 68 : n <= 12 ? 56 : n <= 18 ? 44 : n <= 26 ? 36 : 30;
+    const fs = n <= 8 ? 60 : n <= 12 ? 50 : n <= 18 ? 40 : n <= 26 ? 33 : 27;
     ctx.fillStyle = '#ffffff';
     ctx.textBaseline = 'middle';
     ctx.font = '700 ' + fs + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
@@ -139,30 +139,31 @@
       const flipped = screen > Math.PI / 2 && screen < (3 * Math.PI) / 2;
       ctx.save();
       ctx.rotate(flipped ? mid + Math.PI : mid);
-      // shrink this name until it fits the radial room, then ellipsise
-      const maxW = r * 0.62;
+      const maxW = r * 0.80; // room from just outside the hub to just inside the rim
+      const font = (px) => '700 ' + px + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
       let lfs = fs;
-      while (ctx.measureText(names[i]).width > maxW && lfs > fs * 0.55) {
+      ctx.font = font(lfs);
+      const lines = App.splitLabel(names[i], (t) => ctx.measureText(t).width, maxW);
+      while (Math.max(...lines.map((l) => ctx.measureText(l).width)) > maxW && lfs > fs * 0.32) {
         lfs -= 1;
-        ctx.font = '700 ' + lfs + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
+        ctx.font = font(lfs);
       }
-      const label = App.fitText(ctx, names[i], maxW);
+      const step = lfs * 1.14;
+      const y0 = -((lines.length - 1) * step) / 2;
+      const x = flipped ? -(r - 14) : r - 14;
+      ctx.textAlign = flipped ? 'left' : 'right';
       ctx.lineJoin = 'round';
       ctx.lineWidth = Math.max(2, lfs * 0.14);
       ctx.strokeStyle = 'rgba(6,10,20,.55)';
-      if (flipped) {
-        ctx.strokeText(label, -(r - 30), 0);
-      } else {
-        ctx.strokeText(label, r - 30, 0);
-      }
-      ctx.font = '700 ' + lfs + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
-      if (flipped) {
-        ctx.textAlign = 'left';
-        ctx.fillText(label, -(r - 30), 0);
-      } else {
-        ctx.textAlign = 'right';
-        ctx.fillText(label, r - 30, 0);
-      }
+      lines.forEach((ln, k) => {
+        const t = ctx.measureText(ln).width > maxW ? App.fitText(ctx, ln, maxW) : ln;
+        ctx.strokeText(t, x, y0 + k * step);
+      });
+      ctx.fillStyle = '#ffffff';
+      lines.forEach((ln, k) => {
+        const t = ctx.measureText(ln).width > maxW ? App.fitText(ctx, ln, maxW) : ln;
+        ctx.fillText(t, x, y0 + k * step);
+      });
       ctx.restore();
       ctx.font = '700 ' + fs + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
     }

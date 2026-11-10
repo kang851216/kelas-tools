@@ -203,6 +203,23 @@
     },
 
     /* ---------- text helpers ---------- */
+    // break a name into one or two lines: used by the wheel so long names get
+    // bigger text instead of shrinking to an unreadable size
+    splitLabel(text, measure, limit) {
+      const str = String(text).trim();
+      if (measure(str) <= limit * 1.75) return [str];
+      const words = str.split(/\s+/).filter(Boolean);
+      if (words.length < 2) return [str]; // never break inside a single word
+      let best = null;
+      for (let i = 1; i < words.length; i++) {
+        const a = words.slice(0, i).join(' ');
+        const b = words.slice(i).join(' ');
+        const score = Math.max(measure(a), measure(b));
+        if (!best || score < best.score) best = { score, lines: [a, b] };
+      }
+      return best.lines;
+    },
+
     fitText(ctx, text, maxW) {
       if (ctx.measureText(text).width <= maxW) return text;
       let t = text;
