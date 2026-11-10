@@ -175,3 +175,30 @@ footer.site{color:var(--muted);font-size:13px;padding:28px 0 40px;border-top:1px
 .related h2{font-size:1.05rem;margin:0 0 10px}
 .related ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
 .related a{display:block;padding:11px 14px;border:1px solid var(--line,#e5e7eb);border-radius:12px;text-decoration:none;font-weight:600}
+
+/* landing / guide pages */
+.crumbs{font-size:.8rem;color:var(--muted);margin:6px 0 2px}
+.crumbs a{color:var(--muted)}
+.land .lead{font-size:1.02rem;line-height:1.65}
+.land h2{font-size:1.08rem;margin:26px 0 8px}
+.land p,.land li{line-height:1.68}
+.land table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem}
+.land th,.land td{border:1px solid var(--line,#e5e7eb);padding:8px 10px;text-align:left}
+.land th{background:rgba(37,99,235,.08);font-weight:600}
+.land .cta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 6px}
+.land .cta small{color:var(--muted);font-size:.82rem}
+.steps{padding-left:20px}
+.steps li{margin:6px 0}
+.embedwrap{margin:14px 0 8px;border:1px solid var(--line,#e5e7eb);border-radius:16px;overflow:hidden;background:var(--card,#fff)}
+.embedwrap iframe{display:block;width:100%;border:0;height:780px}
+.hint{font-size:.82rem;color:var(--muted)}
+.guides ul{list-style:none;padding:0;display:grid;gap:8px}
+.guides a{display:block;padding:11px 14px;border:1px solid var(--line,#e5e7eb);border-radius:12px;text-decoration:none;font-weight:600}
+/* ?embed=1 — tool pages rendered inside a landing-page iframe */
+html.embed header.top,html.embed .bottomnav,html.embed footer.site,
+html.embed .faq,html.embed .related,html.embed .groundsh{display:none!important}
+html.embed body{padding-bottom:0!important;background:transparent}
+html.embed .wrap{padding-top:6px}
+@media (max-width:520px){
+  .embedwrap iframe{height:660px}
+}

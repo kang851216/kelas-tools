@@ -1,5 +1,5 @@
 /* sw.js — offline cache for KelasTools */
-const CACHE = 'kelas-v15';
+const CACHE = 'kelas-v16';
 const ASSETS = [
   './',
   './index.html',
@@ -14,6 +14,11 @@ const ASSETS = [
   './js/kelompok.js',
   './js/timer.js',
   './manifest.webmanifest',
+  './cara-mengundi-siswa.html',
+  './timer-ujian-30-menit.html',
+  './pembagi-kelompok-4-orang.html',
+  './roda-nama-offline.html',
+  './ide-ice-breaking-kelas.html',
   './panduan/cara-membagi-kelompok-belajar.html',
   './panduan/ide-memilih-siswa-acak.html'
 ];
