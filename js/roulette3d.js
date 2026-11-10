@@ -227,7 +227,8 @@ export function createWheel3D({ container, palette }) {
 
       if (!empty) {
         const mid = a0 + seg / 2;
-        const outTex = labelTexture(list[i], 'out');
+        const allowTwo = n <= 20;
+        const outTex = labelTexture(list[i], 'out', allowTwo);
         const aspect = (outTex.userData && outTex.userData.aspect) || LABEL_ASPECT;
         const two = !!(outTex.userData && outTex.userData.two);
         const lr0 = R * 0.615;
@@ -244,7 +245,7 @@ export function createWheel3D({ container, palette }) {
         lm.position.set(Math.cos(mid) * lr, Math.sin(mid) * lr, DEPTH / 2 + 1.7);
         lm.rotation.z = mid;
         lm.userData = {
-          mid, outTex, inTex: labelTexture(list[i], 'in'), flipped: false,
+          mid, outTex, inTex: labelTexture(list[i], 'in', allowTwo), flipped: false,
           baseZ: DEPTH / 2 + 1.7
         };
         spin.add(lm);
@@ -270,14 +271,16 @@ export function createWheel3D({ container, palette }) {
   }
 
   /* ---------- textures ---------- */
-  function labelTexture(text, align) {
+  function labelTexture(text, align, allowTwo) {
     const LIMIT = 800 - 34;
     const probe = document.createElement('canvas').getContext('2d');
     const fam = (px) => '800 ' + px + 'px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
     probe.font = fam(240);
 
     const App = window.App || {};
-    const lines = typeof App.splitLabel === 'function'
+    // with more than ~20 segments the wedges are too narrow for two lines,
+    // so long names shrink on one line instead of stacking
+    const lines = allowTwo !== false && typeof App.splitLabel === 'function'
       ? App.splitLabel(String(text), (t) => probe.measureText(t).width, LIMIT)
       : [String(text)];
     const two = lines.length > 1;

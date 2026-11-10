@@ -143,7 +143,7 @@
       const font = (px) => '700 ' + px + 'px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
       let lfs = fs;
       ctx.font = font(lfs);
-      const lines = App.splitLabel(names[i], (t) => ctx.measureText(t).width, maxW);
+      const lines = n > 20 ? [names[i]] : App.splitLabel(names[i], (t) => ctx.measureText(t).width, maxW);
       while (Math.max(...lines.map((l) => ctx.measureText(l).width)) > maxW && lfs > fs * 0.32) {
         lfs -= 1;
         ctx.font = font(lfs);
