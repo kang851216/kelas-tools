@@ -57,3 +57,7 @@ perf.js
 3dcheck.js
 livecard.js
 reftest.js
+3dflow.js
+splitperf.js
+profile.js
+lcpel.js

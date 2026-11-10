@@ -459,17 +459,18 @@
         })
         .catch(() => { loading3D = false; /* keep the canvas wheel */ });
     };
-    // three.js is ~165 KB gzip. Starting the import at first paint makes it compete
-    // with the page itself on a slow phone, so wait for idle (or a first touch).
-    const startWhenIdle = () => {
-      if (window.requestIdleCallback) requestIdleCallback(loadThree, { timeout: 3500 });
-      else setTimeout(loadThree, 1500);
-    };
-    window.addEventListener('load', startWhenIdle);
+    // three.js is ~165 KB gzip — half of what a teacher on a metered phone would
+    // download. Fetch it only once they show intent (typing names, touching the
+    // wheel, pressing play), with a late fallback for passive visitors.
+    const engage = { once: true, passive: true };
+    namesEl.addEventListener('input', loadThree, engage);
+    namesEl.addEventListener('paste', loadThree, engage);
+    if (spinBtn) spinBtn.addEventListener('click', loadThree, engage);
     const box = document.querySelector('.wheelbox');
     if (box) {
-      ['pointerdown', 'touchstart'].forEach((ev) =>
-        box.addEventListener(ev, loadThree, { once: true, passive: true }));
+      ['pointerdown', 'touchstart'].forEach((ev) => box.addEventListener(ev, loadThree, engage));
     }
+    window.addEventListener('keydown', loadThree, engage);
+    setTimeout(loadThree, 15000);
   }
 })();
