@@ -13,6 +13,7 @@
   const clearBtn = document.getElementById('clear');
   const shareBtn = document.getElementById('share');
   const stage = document.getElementById('wheel3d');
+  let wheel3d = null;
 
   // extruded rim: stacked discs at negative Z give the wheel real thickness
   (function buildRim() {
@@ -50,9 +51,18 @@
     winEl.textContent = '';
     if (!spinning) {
       rotation = -Math.PI / Math.max(names.length, 1) / 2;
-      draw();
+      refreshNames();
     }
   });
+
+  function refreshNames() {
+    if (wheel3d) {
+      wheel3d.setNames(names);
+      wheel3d.setRotation(rotation, spinning);
+    } else {
+      draw();
+    }
+  }
 
   function syncCount() {
     countEl.textContent = '(' + names.length + ' nama)';
@@ -62,6 +72,7 @@
 
   /* ---------- drawing ---------- */
   function draw(highlight) {
+    if (wheel3d) { wheel3d.setRotation(rotation, spinning); return; }
     const W = cvs.width, H = cvs.height;
     const cx = W / 2, cy = H / 2, r = W / 2 - 10;
     ctx.clearRect(0, 0, W, H);
@@ -192,6 +203,7 @@
     names = App.shuffle(names);
     namesEl.value = names.join('\n');
     App.saveNames(names);
+    refreshNames();
 
     const start = rotation;
     const turns = 6 + App.randInt(4);
@@ -239,6 +251,7 @@
     lastWinner = names[idx];
     winEl.textContent = lastWinner;
     winEl.classList.add('pop');
+    if (wheel3d) wheel3d.highlight(idx);
     draw();
     App.beep(660, 120, 0.09);
     setTimeout(() => App.beep(990, 220, 0.09), 130);
@@ -252,7 +265,7 @@
         namesEl.value = names.join('\n');
         App.saveNames(names);
         syncCount();
-        draw();
+        refreshNames();
       }, 1400);
     }
   }
@@ -333,7 +346,7 @@
     names = App.shuffle(names);
     namesEl.value = names.join('\n');
     App.saveNames(names);
-    draw();
+    refreshNames();
     App.toast('Urutan diacak');
   });
 
@@ -345,10 +358,29 @@
     lastWinner = null;
     winEl.textContent = '';
     syncCount();
-    draw();
+    refreshNames();
   });
 
   window.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); spin(); }
   });
+
+  /* ---------- optional three.js renderer (progressive enhancement) ---------- */
+  const probe = document.createElement('canvas');
+  const webglOK = !!(probe.getContext('webgl2') || probe.getContext('webgl'));
+  if (webglOK) import(new URL('js/roulette3d.js', document.baseURI).href)
+    .then((mod) => {
+      const w = mod.createWheel3D({
+        container: document.querySelector('.wheelbox'),
+        palette: PALETTE
+      });
+      if (!w) return;
+      wheel3d = w;
+      document.body.classList.add('gl-on');
+      wheel3d.setNames(names);
+      wheel3d.setRotation(rotation, false);
+      const gl = document.getElementById('gl');
+      if (gl) gl.addEventListener('click', spin);
+    })
+    .catch(() => { /* WebGL or module unavailable: keep the canvas wheel */ });
 })();

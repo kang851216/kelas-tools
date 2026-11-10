@@ -76,7 +76,7 @@ textarea:focus,input:focus,select:focus{border-color:var(--accent);box-shadow:0 
   display:flex;justify-content:center;align-items:center;
   perspective:1100px;perspective-origin:50% 46%
 }
-.wheel3d{position:relative;transform-style:preserve-3d;transform:rotateX(var(--tilt,30deg)) scale(var(--wsc,.86));will-change:transform}
+.wheel3d{position:relative;transform-style:preserve-3d;transform:rotateX(var(--tilt,22deg)) scale(var(--wsc,.86));will-change:transform}
 canvas#wheel{
   display:block;width:100%;height:auto;aspect-ratio:1;border-radius:50%;
   touch-action:manipulation;backface-visibility:hidden;
@@ -102,16 +102,23 @@ canvas#wheel{
   background:radial-gradient(ellipse at center,rgba(17,24,39,.45),rgba(17,24,39,0) 72%);
   filter:blur(7px);pointer-events:none;z-index:0
 }
+canvas#gl{
+  display:block;width:100%;height:auto;aspect-ratio:1/.93;touch-action:manipulation;cursor:pointer;
+  border-radius:18px;background:transparent
+}
+body.gl-on .wheel3d{display:none}
+body.gl-on .groundsh{bottom:10%;width:64%;height:6.5%;filter:blur(11px);opacity:.6}
+body.gl-on canvas#gl{position:relative;z-index:1}
 .wheel3d.spinning{animation:wobble 1.15s ease-in-out infinite}
 @keyframes wobble{
-  0%,100%{transform:rotateX(var(--tilt,30deg)) rotateY(0) scale(var(--wsc,.86))}
-  50%{transform:rotateX(calc(var(--tilt,30deg) + 2.5deg)) rotateY(1.4deg) scale(var(--wsc,.86))}
+  0%,100%{transform:rotateX(var(--tilt,22deg)) rotateY(0) scale(var(--wsc,.86))}
+  50%{transform:rotateX(calc(var(--tilt,22deg) + 2.5deg)) rotateY(1.4deg) scale(var(--wsc,.86))}
 }
 .wheel3d.settle{animation:settle .6s cubic-bezier(.2,1.5,.35,1)}
 @keyframes settle{
-  0%{transform:rotateX(var(--tilt,30deg)) scale(calc(var(--wsc,.86) * .985))}
-  55%{transform:rotateX(var(--tilt,30deg)) scale(calc(var(--wsc,.86) * 1.022))}
-  100%{transform:rotateX(var(--tilt,30deg)) scale(var(--wsc,.86))}
+  0%{transform:rotateX(var(--tilt,22deg)) scale(calc(var(--wsc,.86) * .985))}
+  55%{transform:rotateX(var(--tilt,22deg)) scale(calc(var(--wsc,.86) * 1.022))}
+  100%{transform:rotateX(var(--tilt,22deg)) scale(var(--wsc,.86))}
 }
 @media(prefers-reduced-motion:reduce){
   .wheel3d.spinning,.wheel3d.settle{animation:none}

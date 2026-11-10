@@ -9,3 +9,12 @@ publish.sh
 package.json
 package-lock.json
 *.zip
+gl-test.js
+glshot.js
+shot3d.js
+shot3d2.js
+w.js
+dbg3d.js
+final-test.js
+out_*.txt
+tests/
