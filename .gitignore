@@ -19,3 +19,4 @@ final-test.js
 out_*.txt
 tests/
 liveshot.js
+live-gl.js
