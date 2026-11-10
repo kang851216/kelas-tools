@@ -406,7 +406,7 @@ export function createWheel3D({ container, palette }) {
 
   /* ---------- state ---------- */
   let dirty = true;
-  const labelOffset = Math.PI;
+  const labelOffset = 0;
   let spinning = false;
   let t0 = performance.now();
   let pulse = 0;
@@ -427,16 +427,23 @@ export function createWheel3D({ container, palette }) {
     const wob = spinning ? Math.sin((performance.now() - t0) / 150) * 0.011 : 0;
     spin.rotation.z = SIGN * rad;
     tilt.rotation.x = -Math.PI / 2 + wob;
-    for (let i = 0; i < labels.length; i++) {
-      const lm = labels[i];
-      const u = lm.userData;
-      const screen = (((u.mid + rad) % TAU) + TAU) % TAU;
-      const want = screen > Math.PI / 2 && screen < (3 * Math.PI) / 2;
-      if (want !== u.flipped) {
-        u.flipped = want;
-        lm.rotation.z = u.mid + labelOffset + (want ? Math.PI : 0);
-        lm.material.map = want ? u.inTex : u.outTex;
-        lm.material.needsUpdate = true;
+    // flip a label when it sits on the left half of the screen, so text always
+    // reads left-to-right. Judge by the projected position, not by the shape angle:
+    // the tilt mirrors the disc's Y axis.
+    if (!spinning && labels.length) { // flip only when settled, so text doesn't twitch mid-spin
+      spin.updateMatrixWorld(true);
+      const v = new THREE.Vector3();
+      for (let i = 0; i < labels.length; i++) {
+        const lm = labels[i];
+        const u = lm.userData;
+        v.setFromMatrixPosition(lm.matrixWorld).project(camera);
+        const want = Math.abs(Math.atan2(v.y, v.x)) > Math.PI / 2;
+        if (want !== u.flipped) {
+          u.flipped = want;
+          lm.rotation.z = u.mid + labelOffset + (want ? Math.PI : 0);
+          lm.material.map = want ? u.inTex : u.outTex;
+          lm.material.needsUpdate = true;
+        }
       }
     }
     dirty = true;
