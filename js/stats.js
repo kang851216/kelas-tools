@@ -51,8 +51,8 @@
     }
     bump('hr-' + host);
 
-    var page = location.pathname.replace(/^\/kelas-tools/, '');
-    if (!page || page === '/' || page === '/index.html') page = 'home';
+    var page = location.pathname.replace(/^\/kelas-tools/, '').replace(/^\/+/, '');
+    if (!page || page === 'index.html') page = 'home';
     else page = page.replace(/\.html$/, '').replace(/[^a-z0-9/-]+/gi, '-').slice(0, 40) || 'home';
     bump('hp-' + page);
 

@@ -63,3 +63,6 @@ profile.js
 lcpel.js
 data/
 .gsc_profile/
+gsc_*.js
+splitcheck.js
+gscsession*.js
