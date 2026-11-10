@@ -161,3 +161,17 @@ footer.site{color:var(--muted);font-size:13px;padding:28px 0 40px;border-top:1px
 .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px;margin:10px 0}
 .kv dt{color:var(--muted)}
 @media print{header.top,.bottomnav,footer.site,.row{display:none}}
+
+/* FAQ + related blocks (SEO content) */
+.faq{margin:28px 0 8px}
+.faq h2{font-size:1.05rem;margin:0 0 10px}
+.faq details{background:var(--card,#fff);border:1px solid var(--line,#e5e7eb);border-radius:12px;padding:12px 14px;margin:0 0 8px}
+.faq summary{cursor:pointer;font-weight:600;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";float:right;color:#64748b;font-weight:700}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin:8px 0 0;color:#475569;line-height:1.6;font-size:.94rem}
+.related{margin:26px 0 10px}
+.related h2{font-size:1.05rem;margin:0 0 10px}
+.related ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.related a{display:block;padding:11px 14px;border:1px solid var(--line,#e5e7eb);border-radius:12px;text-decoration:none;font-weight:600}
