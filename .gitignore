@@ -61,3 +61,5 @@ reftest.js
 splitperf.js
 profile.js
 lcpel.js
+data/
+.gsc_profile/
